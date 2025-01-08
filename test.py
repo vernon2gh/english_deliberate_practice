@@ -48,7 +48,19 @@ def chunks_filter(filter_path, chunks):
         return chunks
     with open(filter_path, 'r') as file:
         filter = [line.strip().lower() for line in file]
-    return [part for part in chunks if part not in filter]
+
+    filtered_chunks = []
+    i = 0
+    while i < len(chunks):
+        if chunks[i] in filter:
+            if i > 0 and i < len(chunks) - 2:
+                chunks[i + 2] = chunks[i] + ' ' + chunks[i + 2]
+            i += 2 if i < len(chunks) - 2 else 1
+            continue
+        filtered_chunks.append(chunks[i])
+        i += 1
+
+    return filtered_chunks
 
 def chunks_run(chunks, hear=False, cache=False):
     if not isinstance(chunks, list):
