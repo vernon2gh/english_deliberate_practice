@@ -1,8 +1,9 @@
-import sys
 import os
 import re
 import argparse
-import pyttsx3
+import asyncio
+import edge_tts
+import mpv
 from termcolor import colored
 
 def sentences_read(file_path):
@@ -10,10 +11,13 @@ def sentences_read(file_path):
         sentences = file.readlines()
     return [sentence.strip() for sentence in sentences]
 
-def sentence_play(sentence):
-    engine = pyttsx3.init()
-    engine.say(sentence)
-    engine.runAndWait()
+async def sentence_play(sentence) -> None:
+    communicate = edge_tts.Communicate(sentence, "en-US-AndrewNeural")
+    await communicate.save("temp.mp3")
+    player = mpv.MPV()
+    player.play("temp.mp3")
+    player.wait_for_playback()
+    os.remove("temp.mp3")
 
 # Remove punctuation, Chinese characters, and convert to lowercase
 def sentence_raw(sentence):
@@ -44,7 +48,7 @@ def chunks_run(chunks, hear=False):
         while True:
             if not hear:
                 print(colored(chunk, 'grey'), end="\r")
-            sentence_play(chunk)
+            asyncio.run(sentence_play(chunk))
             user_input = sentence_raw(input())
             if user_input == chunk:
                 break
