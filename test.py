@@ -11,13 +11,22 @@ def sentences_read(file_path):
         sentences = file.readlines()
     return [sentence.strip() for sentence in sentences]
 
-async def sentence_play(sentence) -> None:
-    communicate = edge_tts.Communicate(sentence, "en-US-AndrewNeural")
-    await communicate.save("temp.mp3")
+async def sentence_generate_mp3(sentence) -> str:
+    cache_dir = ".mp3_cache"
+    os.makedirs(cache_dir, exist_ok=True)
+    cache_file = os.path.join(cache_dir, f"{sentence}.mp3")
+
+    if not os.path.exists(cache_file):
+        communicate = edge_tts.Communicate(sentence, "en-US-AndrewNeural")
+        await communicate.save(cache_file)
+
+    return cache_file
+
+def sentence_play(sentence):
+    mp3 = asyncio.run(sentence_generate_mp3(sentence))
     player = mpv.MPV()
-    player.play("temp.mp3")
+    player.play(mp3)
     player.wait_for_playback()
-    os.remove("temp.mp3")
 
 # Remove punctuation, Chinese characters, and convert to lowercase
 def sentence_raw(sentence):
@@ -41,19 +50,23 @@ def chunks_filter(filter_path, chunks):
         filter = [line.strip().lower() for line in file]
     return [part for part in chunks if part not in filter]
 
-def chunks_run(chunks, hear=False):
+def chunks_run(chunks, hear=False, cache=False):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
+        if cache:
+            asyncio.run(sentence_generate_mp3(chunk))
+            continue
+
         while True:
             if not hear:
                 print(colored(chunk, 'grey'), end="\r")
-            asyncio.run(sentence_play(chunk))
+            sentence_play(chunk)
             user_input = sentence_raw(input())
             if user_input == chunk:
                 break
 
-def do_main(file_path, filter_path, split=False, hear=False):
+def do_main(file_path, filter_path, split=False, hear=False, cache=False):
     sentences = sentences_read(file_path)
 
     for sentence in sentences:
@@ -61,14 +74,15 @@ def do_main(file_path, filter_path, split=False, hear=False):
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
-        chunks_run(chunks, hear)
+        chunks_run(chunks, hear, cache)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some sentences.')
     parser.add_argument('--hear', action='store_true', help="Hear sentence/chunk/word")
     parser.add_argument('--split', action='store_true', help="Chunk split")
+    parser.add_argument('--cache', action='store_true', help="Pre-generate mp3 cache")
     parser.add_argument('--filter', type=str, default='./filter.txt', help="Path to chunk filter file")
     parser.add_argument('--file', type=str, default='./sentences.txt', help="Path to sentences file")
     args = parser.parse_args()
 
-    do_main(args.file, args.filter, args.split, args.hear)
+    do_main(args.file, args.filter, args.split, args.hear, args.cache)
