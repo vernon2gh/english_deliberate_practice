@@ -1,3 +1,4 @@
+import sys
 import os
 import re
 import argparse
@@ -77,6 +78,10 @@ def chunks_run(chunks, hear=False, cache=False):
                 print(colored(chunk, 'grey'), end="\r")
             sentence_play(chunk_raw)
             user_input = sentence_raw(input())
+            # Go back to the beginning of the previous line
+            # and clear the contents.
+            print("\033[F\033[K", end="")
+            sys.stdout.flush()
             if user_input == chunk_raw:
                 break
 
