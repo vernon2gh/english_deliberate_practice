@@ -7,36 +7,36 @@ import edge_tts
 import mpv
 from termcolor import colored
 
-def sentences_read(file_path):
+def data_read(file_path):
     with open(file_path, 'r') as file:
-        sentences = file.readlines()
-    return [sentence.strip() for sentence in sentences]
+        tmp = file.readlines()
+    return [data.strip() for data in tmp]
 
-async def sentence_generate_mp3(sentence) -> str:
+async def chunk_generate_mp3(chunk) -> str:
     cache_dir = ".mp3_cache"
     os.makedirs(cache_dir, exist_ok=True)
-    cache_file = os.path.join(cache_dir, f"{sentence}.mp3")
+    cache_file = os.path.join(cache_dir, f"{chunk}.mp3")
 
     if not os.path.exists(cache_file):
-        communicate = edge_tts.Communicate(sentence, "en-US-AndrewNeural")
+        communicate = edge_tts.Communicate(chunk, "en-US-AndrewNeural")
         await communicate.save(cache_file)
 
     return cache_file
 
-def sentence_play(sentence):
-    mp3 = asyncio.run(sentence_generate_mp3(sentence))
+def chunk_play(chunk):
+    mp3 = asyncio.run(chunk_generate_mp3(chunk))
     player = mpv.MPV()
     player.play(mp3)
     player.wait_for_playback()
 
 # Remove punctuation, Chinese characters, and convert to lowercase
-def sentence_raw(sentence):
-    sentence = re.sub(r'[^\w\s]', '', sentence)
-    sentence = re.sub(r'[\u4e00-\u9fff]', '', sentence)
-    return sentence.strip().lower()
+def chunk_to_raw(chunk):
+    chunk = re.sub(r'[^\w\s]', '', chunk)
+    chunk = re.sub(r'[\u4e00-\u9fff]', '', chunk)
+    return chunk.strip().lower()
 
 def sentence_split(sentence):
-    words = sentence_raw(sentence).split()
+    words = chunk_to_raw(sentence).split()
     chunks = []
     for i in range(len(words)):
         chunks.append(words[i])
@@ -68,16 +68,16 @@ def chunks_run(chunks, hear=False, cache=False):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
-        chunk_raw = sentence_raw(chunk)
+        chunk_raw = chunk_to_raw(chunk)
         if cache:
-            asyncio.run(sentence_generate_mp3(chunk_raw))
+            asyncio.run(chunk_generate_mp3(chunk_raw))
             continue
 
         while True:
             if not hear:
                 print(colored(chunk, 'grey'), end="\r")
-            sentence_play(chunk_raw)
-            user_input = sentence_raw(input())
+            chunk_play(chunk_raw)
+            user_input = chunk_to_raw(input())
             # Go back to the beginning of the previous line
             # and clear the contents.
             print("\033[F\033[K", end="")
@@ -85,8 +85,8 @@ def chunks_run(chunks, hear=False, cache=False):
             if user_input == chunk_raw:
                 break
 
-def do_main(file_path, filter_path, split=False, hear=False, cache=False):
-    sentences = sentences_read(file_path)
+def sentence_main(sentence_path, filter_path, split=False, hear=False, cache=False):
+    sentences = data_read(sentence_path)
 
     for sentence in sentences:
         chunks = sentence
@@ -95,13 +95,51 @@ def do_main(file_path, filter_path, split=False, hear=False, cache=False):
             chunks = chunks_filter(filter_path, chunks)
         chunks_run(chunks, hear, cache)
 
+def word_filter(filter_path, words):
+    if not os.path.exists(filter_path):
+        return words
+    with open(filter_path, 'r') as file:
+        filter = [line.strip().lower() for line in file]
+    return [part for part in words if part not in filter]
+
+def words_ebbinghaus(chunks):
+    intervals = [1, 2, 4, 7, 15]
+    ebbinghaus_chunks = []
+    chunk_groups = [chunks[i:i + 20] for i in range(0, len(chunks), 20)]
+
+    for group in chunk_groups:
+        chunks_day = [[] for _ in range(35)]
+        for i, chunk in enumerate(group):
+            chunks_day[i].append(chunk)
+
+        for i, chunk in enumerate(group):
+            for interval in intervals:
+                chunks_day[i + interval].append(chunk)
+
+        ebbinghaus_chunks.extend([item for sublist in chunks_day for item in sublist])
+
+    return ebbinghaus_chunks
+
+def word_main(word_path, filter_path, split=False, hear=False, cache=False):
+    words = data_read(word_path)
+
+    chunks = word_filter(filter_path, words)
+    if split:
+            chunks = words_ebbinghaus(chunks)
+    chunks_run(chunks, hear, cache)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some sentences.')
-    parser.add_argument('--hear', action='store_true', help="Hear sentence/chunk/word")
-    parser.add_argument('--split', action='store_true', help="Chunk split")
-    parser.add_argument('--cache', action='store_true', help="Pre-generate mp3 cache")
-    parser.add_argument('--filter', type=str, default='./filter.txt', help="Path to chunk filter file")
-    parser.add_argument('--file', type=str, default='./sentences.txt', help="Path to sentences file")
+    parser.add_argument('--hear',  action='store_true', help="hear sentence/chunk/word")
+    parser.add_argument('--split', action='store_true', help="split sentence or generate word ebbinghaus")
+    parser.add_argument('--cache', action='store_true', help="pre-generate mp3 cache")
+    parser.add_argument('--word',  action='store_true', help="practice the words only")
+    parser.add_argument('--ffile', type=str, default='./filter.txt', help="path to filter file")
+    parser.add_argument('--sfile', type=str, default='./sentences.txt', help="path to sentences file")
+    parser.add_argument('--wfile', type=str, default='./word.txt', help="path to word file")
     args = parser.parse_args()
 
-    do_main(args.file, args.filter, args.split, args.hear, args.cache)
+    if args.word:
+        word_main(args.wfile, args.ffile, args.split, args.hear, args.cache)
+    else:
+        sentence_main(args.sfile, args.ffile, args.split, args.hear, args.cache)
