@@ -35,12 +35,13 @@ def sentence_raw(sentence):
     return sentence.strip().lower()
 
 def sentence_split(sentence):
-    words = sentence.split()
+    words = sentence_raw(sentence).split()
     chunks = []
     for i in range(len(words)):
         chunks.append(words[i])
         if i > 0:
             chunks.append(' '.join(words[:i+1]))
+    chunks[-1] = sentence
     return chunks
 
 def chunks_filter(filter_path, chunks):
@@ -66,23 +67,24 @@ def chunks_run(chunks, hear=False, cache=False):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
+        chunk_raw = sentence_raw(chunk)
         if cache:
-            asyncio.run(sentence_generate_mp3(chunk))
+            asyncio.run(sentence_generate_mp3(chunk_raw))
             continue
 
         while True:
             if not hear:
                 print(colored(chunk, 'grey'), end="\r")
-            sentence_play(chunk)
+            sentence_play(chunk_raw)
             user_input = sentence_raw(input())
-            if user_input == chunk:
+            if user_input == chunk_raw:
                 break
 
 def do_main(file_path, filter_path, split=False, hear=False, cache=False):
     sentences = sentences_read(file_path)
 
     for sentence in sentences:
-        chunks = sentence_raw(sentence)
+        chunks = sentence
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
