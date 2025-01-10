@@ -21,13 +21,13 @@
 ## 练习句子
 
 ```bash
-$ python test.py --hear --split
+$ python english_deliberate_practice.py.py --hear --split
 ```
 
 ## 练习单词
 
 ```bash
-$ python test.py --hear --split --word
+$ python english_deliberate_practice.py.py --hear --split --word
 ```
 
 ## 支持参数

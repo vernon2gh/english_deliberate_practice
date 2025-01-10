@@ -24,13 +24,13 @@ Before running the script, make sure to install the required dependencies:
 ## Practice sentences
 
 ```bash
-$ python test.py --hear --split
+$ python english_deliberate_practice.py.py --hear --split
 ```
 
 ## Practice words
 
 ```bash
-$ python test.py --hear --split --word
+$ python english_deliberate_practice.py.py --hear --split --word
 ```
 
 ## Supported arguments
