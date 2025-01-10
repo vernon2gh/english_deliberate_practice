@@ -1,6 +1,6 @@
-hello
-world
-teacher
+hello 您好
+world #世界
+teacher 老师
 ideal
 ideology
 identical
