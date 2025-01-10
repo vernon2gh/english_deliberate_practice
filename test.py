@@ -130,9 +130,9 @@ def word_main(word_path, filter_path, split=False, hear=False, cache=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some sentences.')
-    parser.add_argument('--hear',  action='store_true', help="hear sentence/chunk/word")
-    parser.add_argument('--split', action='store_true', help="split sentence or generate word ebbinghaus")
-    parser.add_argument('--cache', action='store_true', help="pre-generate mp3 cache")
+    parser.add_argument('--hear',  action='store_true', help="hear-write sentence/chunk/word")
+    parser.add_argument('--split', action='store_true', help="split sentence to chunks or generate word based on the Ebbinghaus rule")
+    parser.add_argument('--cache', action='store_true', help="pre-generate mp3 audio cache")
     parser.add_argument('--word',  action='store_true', help="practice the words only")
     parser.add_argument('--ffile', type=str, default='./filter.txt', help="path to filter file")
     parser.add_argument('--sfile', type=str, default='./sentences.txt', help="path to sentences file")
