@@ -9,6 +9,7 @@ practice words using the Ebbinghaus forgetting curve, and listen mode.
                        filter chunks, play audio, and practice sentences.
 - word processing    : read words from a file, filter them, and practice words
                        using the Ebbinghaus forgetting curve.
+- error note         : collect sentences/blocks/words that users practice incorrectly.
 - listen mode        : repeat a specified number of times at specified intervals
                        for intensive listening training
 - audio cache        : pre-generate audio cache to improve performance.
@@ -59,6 +60,7 @@ The script supports various command-line arguments to control different behavior
 - `--listen`    : listen mode
 - `--interval`  : interval in seconds for listen mode, default 1
 - `--repeat`    : number of times to repeat for listen mode, default 3
-- `--ffile`     : path to the filter file (default: `./filter.txt`).
-- `--sfile`     : path to the sentence file (default: `./sentences.txt`).
-- `--wfile`     : path to the word file (default: `./word.txt`).
+- `--ffile`     : path to the filter file (default: `./filter.txt`)
+- `--efile`     : path to error note file (default: `./errornote.txt`)
+- `--sfile`     : path to the sentence file (default: `./sentences.txt`)
+- `--wfile`     : path to the word file (default: `./word.txt`)

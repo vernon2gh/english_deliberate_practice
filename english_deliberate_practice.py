@@ -65,7 +65,7 @@ def chunks_filter(filter_path, chunks):
 
     return filtered_chunks
 
-def chunks_run(chunks, listen, interval, repeat, grey, cache):
+def chunks_run(chunks, listen, interval, repeat, grey, cache, error_path):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
@@ -85,6 +85,7 @@ def chunks_run(chunks, listen, interval, repeat, grey, cache):
                 sys.stdout.flush()
             continue
 
+        error_count = 0
         while True:
             if grey:
                 print(colored(chunk, 'grey'), end="\r")
@@ -97,7 +98,14 @@ def chunks_run(chunks, listen, interval, repeat, grey, cache):
             if user_input == chunk_raw:
                 break
 
-def sentence_main(sentence_path, filter_path, split, listen, interval, repeat, grey, cache):
+            error_count += 1
+            if error_count % 3 != 0:
+                continue
+            with open(error_path, "a") as error_file:
+                error_file.write(chunk + "\n")
+            print(colored(chunk, 'grey'), end="\r")
+
+def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, grey, cache):
     sentences = data_read(sentence_path)
 
     for sentence in sentences:
@@ -105,7 +113,7 @@ def sentence_main(sentence_path, filter_path, split, listen, interval, repeat, g
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
-        chunks_run(chunks, listen, interval, repeat, grey, cache)
+        chunks_run(chunks, listen, interval, repeat, grey, cache, error_path)
 
 def word_filter(filter_path, words):
     if not os.path.exists(filter_path):
@@ -132,13 +140,13 @@ def words_ebbinghaus(chunks):
 
     return ebbinghaus_chunks
 
-def word_main(word_path, filter_path, split, listen, interval, repeat, grey, cache):
+def word_main(word_path, filter_path, error_path, split, listen, interval, repeat, grey, cache):
     words = data_read(word_path)
 
     chunks = word_filter(filter_path, words)
     if split:
             chunks = words_ebbinghaus(chunks)
-    chunks_run(chunks, listen, interval, repeat, grey, cache)
+    chunks_run(chunks, listen, interval, repeat, grey, cache, error_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='English deliberate practice')
@@ -150,13 +158,14 @@ if __name__ == "__main__":
     parser.add_argument('--interval', type=int, default=1, help="interval in seconds for listen mode, default 1")
     parser.add_argument('--repeat', type=int, default=3, help="number of times to repeat for listen mode, default 3")
     parser.add_argument('--ffile', type=str, default='./filter.txt', help="path to filter file")
+    parser.add_argument('--efile', type=str, default='./errornote.txt', help="path to error note file")
     parser.add_argument('--sfile', type=str, default='./sentences.txt', help="path to sentences file")
     parser.add_argument('--wfile', type=str, default='./word.txt', help="path to word file")
     args = parser.parse_args()
 
     if args.word:
-        word_main(args.wfile, args.ffile, args.split, args.listen, args.interval,
-                  args.repeat, args.grey, args.cache)
+        word_main(args.wfile, args.ffile, args.efile, args.split, args.listen,
+                  args.interval, args.repeat, args.grey, args.cache)
     else:
-        sentence_main(args.sfile, args.ffile, args.split, args.listen, args.interval,
-                      args.repeat, args.grey, args.cache)
+        sentence_main(args.sfile, args.ffile, args.efile, args.split, args.listen,
+                      args.interval, args.repeat, args.grey, args.cache)
