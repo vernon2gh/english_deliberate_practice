@@ -3,6 +3,7 @@ import os
 import re
 import argparse
 import asyncio
+import time
 import edge_tts
 import mpv
 from termcolor import colored
@@ -64,7 +65,7 @@ def chunks_filter(filter_path, chunks):
 
     return filtered_chunks
 
-def chunks_run(chunks, hear=False, cache=False):
+def chunks_run(chunks, listen, interval, repeat, grey, cache):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
@@ -72,9 +73,20 @@ def chunks_run(chunks, hear=False, cache=False):
         if cache:
             asyncio.run(chunk_generate_mp3(chunk_raw))
             continue
+        if listen:
+            if grey:
+                print(colored(chunk, 'grey'), end="\r")
+            for _ in range(repeat):
+                chunk_play(chunk_raw)
+                time.sleep(interval)
+            if grey:
+                # Clear the contents.
+                print("\033[K", end="")
+                sys.stdout.flush()
+            continue
 
         while True:
-            if not hear:
+            if grey:
                 print(colored(chunk, 'grey'), end="\r")
             chunk_play(chunk_raw)
             user_input = chunk_to_raw(input())
@@ -85,7 +97,7 @@ def chunks_run(chunks, hear=False, cache=False):
             if user_input == chunk_raw:
                 break
 
-def sentence_main(sentence_path, filter_path, split=False, hear=False, cache=False):
+def sentence_main(sentence_path, filter_path, split, listen, interval, repeat, grey, cache):
     sentences = data_read(sentence_path)
 
     for sentence in sentences:
@@ -93,7 +105,7 @@ def sentence_main(sentence_path, filter_path, split=False, hear=False, cache=Fal
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
-        chunks_run(chunks, hear, cache)
+        chunks_run(chunks, listen, interval, repeat, grey, cache)
 
 def word_filter(filter_path, words):
     if not os.path.exists(filter_path):
@@ -120,26 +132,31 @@ def words_ebbinghaus(chunks):
 
     return ebbinghaus_chunks
 
-def word_main(word_path, filter_path, split=False, hear=False, cache=False):
+def word_main(word_path, filter_path, split, listen, interval, repeat, grey, cache):
     words = data_read(word_path)
 
     chunks = word_filter(filter_path, words)
     if split:
             chunks = words_ebbinghaus(chunks)
-    chunks_run(chunks, hear, cache)
+    chunks_run(chunks, listen, interval, repeat, grey, cache)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process some sentences.')
-    parser.add_argument('--hear',  action='store_true', help="hear-write sentence/chunk/word")
+    parser = argparse.ArgumentParser(description='English deliberate practice')
     parser.add_argument('--split', action='store_true', help="split sentence to chunks or generate word based on the Ebbinghaus rule")
+    parser.add_argument('--grey',  action='store_true', help="grey sentence/chunk/word")
     parser.add_argument('--cache', action='store_true', help="pre-generate mp3 audio cache")
     parser.add_argument('--word',  action='store_true', help="practice the words only")
+    parser.add_argument('--listen',  action='store_true', help="listen mode")
+    parser.add_argument('--interval', type=int, default=1, help="interval in seconds for listen mode, default 1")
+    parser.add_argument('--repeat', type=int, default=3, help="number of times to repeat for listen mode, default 3")
     parser.add_argument('--ffile', type=str, default='./filter.txt', help="path to filter file")
     parser.add_argument('--sfile', type=str, default='./sentences.txt', help="path to sentences file")
     parser.add_argument('--wfile', type=str, default='./word.txt', help="path to word file")
     args = parser.parse_args()
 
     if args.word:
-        word_main(args.wfile, args.ffile, args.split, args.hear, args.cache)
+        word_main(args.wfile, args.ffile, args.split, args.listen, args.interval,
+                  args.repeat, args.grey, args.cache)
     else:
-        sentence_main(args.sfile, args.ffile, args.split, args.hear, args.cache)
+        sentence_main(args.sfile, args.ffile, args.split, args.listen, args.interval,
+                      args.repeat, args.grey, args.cache)
