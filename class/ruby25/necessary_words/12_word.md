@@ -1,0 +1,69 @@
+* aggravate #A恶化B
+* aggregate #总计
+* aggressive #好斗的
+* agitate #A煽动B
+* agreeable #愉快的
+* aid #援助
+* aim #目标
+* alarm #警报
+* alien #外星人
+	* alienate #使疏远
+* allocate #A分配B
+* allow #A允许B
+* alter #A改变B
+	* alternate #使交替
+	* alternative #供选择的
+* brief #简短的
+* brisk #轻快的 [[22_word#^69c984|risk]]
+* browse #A浏览B
+* compare #A比较B
+	* comparable #可比较的
+	* comparative #比较的
+	* comparison #比较
+* compel #A迫使B
+* compensate #A补偿B
+* compete #A竞争B
+	* competent #有能力的
+	* competition #竞争
+	* competitive #竞争的
+	* [[22_word#^d3b204|rival]]
+* compile #A编译B
+* complain #A抱怨B
+	* complaint #抱怨
+* complete #A完成B
+* complement #相辅相成 #plement
+* complex #复杂的
+* complicate #复杂的
+* compliment #恭维
+* comply #A顺从B
+* differ #A不同B
+	* difference #不同
+* diffuse #A弥漫B
+* emphasis #强调
+	* emphasize #A强调B
+* employ #A雇佣B
+	* employee #雇员
+	* employer #雇主
+	* employment #雇用
+* enable #使能够
+* encounter #A遇到B
+* encourage #A鼓励B
+* end
+* endeavor #努力
+* endorse #A支持B
+* indicate #A表明B
+	* indication #指示
+	* indicative #指示的
+* outrage #愤怒
+* outset #开始
+* outside #外面
+* outward #向外的
+* special #特殊的
+	* specialist #专家
+	* speciality #专长
+	* specialize #专门从事
+* specify #A指定B
+* specific #明确的
+	* specification #规格
+* species #种类
+* speculate #A推测B

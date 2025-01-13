@@ -1,0 +1,76 @@
+* beam #光线
+* become #A成为B
+* corporate #公司的
+	* corporation #公司
+* deprive #A剥夺B
+* derive #A起源B
+* describe #A描述B
+	* description #描述
+* deserve #A值得B
+* design #设计
+* designate #A指定B
+* desire #欲望 #A渴望B
+	* desirable #令人满意的
+* flaw #缺陷
+* flexible #灵活的
+* fling #A投掷B
+* flourish #A繁荣B
+* grow #A生长B
+	* growth #生长
+	* grown-up #成年人
+* hinder #A阻碍B
+* hitherto #到目前为止
+* impact #影响
+* impair #A损害B
+* impart #A传授B
+* implement #A执行B  #plement
+* hint #暗示
+* imply #A暗示B
+	* implicit #暗示的
+	* implication #暗示
+* import #A输入B
+	* importance #重要
+	* important #重要的
+* impose #A强加B
+* impress #使xxx有印象
+	* impression #印象
+	* impressive #给人深刻印象的
+* improve #A提高B
+* impulse #冲动
+* limit #A限制B
+	* limitation #限制
+	* limited #有限的
+* original #最初的
+	* originate #起源于
+* petition #请愿
+* phenomenon #现象
+* philosophy #哲学
+	* philosopher #哲学家
+* phase #阶段
+* phrase #短语
+* physical #物理的 #身体的
+	* physician #内科医生
+* pierce #A穿透B
+* reason #原因
+	* reasonable #合理的
+* recent #最近的
+* serve #A服务B
+	* service #服务
+	* servant #仆人
+* set
+	* setback #挫折
+	* setting #环境
+	* settle #A解决B
+	* settlement #解决
+* several #若干 #几个的
+* severe #严重的
+* shape #形状
+* sharp #锋利的
+* share #A分享B
+* shelter #庇护 #避难所
+* sophisticated #复杂的
+* sovereign #至高无上的
+* sow #A播种B
+* toll #通行费
+* tone #语气
+* topic #主题

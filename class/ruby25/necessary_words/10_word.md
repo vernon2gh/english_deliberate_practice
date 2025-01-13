@@ -1,0 +1,68 @@
+* acclaim #欢呼
+* accommodate #A适应B
+* accommodation #住处
+* accompany #A陪伴B
+* accomplish #A完成B
+* account #账户
+* accountant #会计师
+* bias #偏见
+* bid #出价
+* bill #帐单
+	* billion #十亿
+* birth #出生
+* charge #使充电
+* charm #魅力
+* chase #A追逐B
+* demand #A要求B
+* democracy #民主
+	* democratic #民主的
+* demographic #人口统计学的
+* demonstrate #A证明B
+* denial #否认
+	* deny #A否认B
+* denote #A表示B
+* department #部门
+* depend #A依赖B
+	* dependent #依赖的
+* deposit #存款
+* depress #A降低B
+* emerge #A浮现B
+	* emergency #紧急状态
+* eminent #著名的
+* emotion #情感
+* fear #恐惧
+	* fearful #可怕的
+* feature #特征
+* federal #联邦政府的
+	* federation #联合
+* feed #A喂养B
+* feedback #反馈
+* feeling #感觉
+* fertile #肥沃的
+* goal #目标
+* goods #货物
+* govern #A管理B
+	* government #政府
+	* governor #管理者
+* gradual #逐渐的
+* graduate #毕业 #毕业生
+* grand #宏伟的
+* grant #A授予B
+* heal #A治愈B
+	* health #健康
+	* healthy #健康的
+* heap #堆
+* hesitate #A犹豫B
+* highlight #A强调B
+* highly #非常
+* immediate #直接的
+* immense #巨大的
+* immerse #A沉浸B
+* immigrant #移民
+* imminent #即将发生的
+* immune #免疫的
+* likelihood #可能性
+* likely #很可能
+* likewise #同样地
+* self
+* selfish #自私的
