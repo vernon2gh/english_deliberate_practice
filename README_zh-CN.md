@@ -23,25 +23,25 @@
 ## 练习句子
 
 ```bash
-$ python english_deliberate_practice.py.py --grey --split
+$ python english_deliberate_practice.py.py --prompt --split
 ```
 
 ## 听句子
 
 ```bash
-$ python english_deliberate_practice.py.py --grey --split --listen
+$ python english_deliberate_practice.py.py --prompt --split --listen
 ```
 
 ## 练习单词
 
 ```bash
-$ python english_deliberate_practice.py.py --grey --split --word
+$ python english_deliberate_practice.py.py --prompt --split --word
 ```
 
 ## 听单词
 
 ```bash
-$ python english_deliberate_practice.py.py --grey --split --word --listen
+$ python english_deliberate_practice.py.py --prompt --split --word --listen
 ```
 
 ## 支持参数
@@ -49,12 +49,12 @@ $ python english_deliberate_practice.py.py --grey --split --word --listen
 该脚本支持通过各种命令行参数控制不同行为：
 
 - `--split`     : 拆分句子为多个不同块 或者 生成艾宾浩斯规则的单词
-- `--grey`      : 提示句子/块/单词
-- `--cache`     : 预生成 mp3 音频缓存
 - `--word`      : 只练习单词
-- `--listen`    : 听力模式
+- `--prompt`    : 提示句子/块/单词
+- `--cache`     : 预生成 mp3 音频缓存
 - `--interval`  : 在听力模块播放音频的间隔时间，单位：秒，默认 1
-- `--repeat`    : 在听力模块播放音频的重复次数，默认 3
+- `--repeat`    : 在听力模块播放音频的重复次数，默认 1
+- `--listen`    : 听力模式
 - `--ffile`     : 过滤文件的路径（默认：`./filter.txt`）
 - `--efile`     : 错误笔记的路径（默认：`./errornote.txt`）
 - `--sfile`     : 句子文件的路径（默认：`./sentences.txt`）
