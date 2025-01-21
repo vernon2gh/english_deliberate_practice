@@ -7,6 +7,7 @@ import time
 import edge_tts
 import mpv
 import threading
+import spacy
 from termcolor import colored
 
 def data_read(file_path):
@@ -80,6 +81,33 @@ def chunks_filter(filter_path, chunks):
 
     return filtered_chunks
 
+def chunks_prototype(chunks):
+    nlp = spacy.load("en_core_web_sm")
+    previous_chunk = None
+    result = []
+    for chunk in chunks:
+        if ' ' in chunk:
+            sub_chunks = chunk.split()
+            if previous_chunk in sub_chunks:
+                result.append(chunk)
+                continue
+            for sub_chunk in sub_chunks:
+                doc = nlp(sub_chunk)
+                lemma = doc[0].lemma_
+                if sub_chunk != lemma:
+                    result.append(lemma)
+                    result.append(sub_chunk)
+                    previous_chunk = sub_chunk
+            result.append(chunk)
+            continue
+        doc = nlp(chunk)
+        lemma = doc[0].lemma_
+        if chunk != lemma:
+            result.append(lemma)
+            previous_chunk = chunk
+        result.append(chunk)
+    return result
+
 def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
     if not isinstance(chunks, list):
         chunks = [chunks]
@@ -130,6 +158,7 @@ def sentence_main(sentence_path, filter_path, error_path, split, listen, interva
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
+            chunks = chunks_prototype(chunks)
             chunks.insert(0, sentence)
         chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path)
 
