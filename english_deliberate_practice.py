@@ -58,7 +58,7 @@ def sentence_split(sentence):
         chunks.append(words[i])
         if i > 0:
             chunks.append(' '.join(words[:i+1]))
-    chunks[-1] = sentence
+    chunks[-1] = chunk_to_raw(sentence)
     return chunks
 
 def chunks_filter(filter_path, chunks):
@@ -130,6 +130,7 @@ def sentence_main(sentence_path, filter_path, error_path, split, listen, interva
         if split:
             chunks = sentence_split(chunks)
             chunks = chunks_filter(filter_path, chunks)
+            chunks.insert(0, sentence)
         chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path)
 
 def word_filter(filter_path, words):
