@@ -108,17 +108,32 @@ def chunks_prototype(chunks):
         result.append(chunk)
     return result
 
+def chunk_colored(user_input, chunk):
+    if user_input == chunk_to_raw(chunk):
+        return colored(chunk, 'grey')
+
+    result = []
+    for i, char in enumerate(chunk):
+        if re.match(r'[\u4e00-\u9fff]', char) or re.match(r'[^\w\s]', char):
+            result.append(colored(char, 'grey'))
+        elif i < len(user_input) and char.lower() == user_input[i].lower():
+            result.append(colored(char, 'grey'))
+        else:
+            result.append(colored(char, 'light_red'))
+    return ''.join(result)
+
 def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
         chunk_raw = chunk_to_raw(chunk)
+        user_input = chunk_raw
         if cache:
             asyncio.run(chunk_generate_mp3(chunk_raw))
             continue
         if listen:
             if prompt:
-                print(colored(chunk, 'grey'), end="\r")
+                print(chunk_colored(user_input, chunk), end="\r")
             chunk_play(chunk_raw, interval, repeat)
             if prompt:
                 # Clear the contents.
@@ -129,7 +144,7 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
         error_count = 0
         while True:
             if prompt:
-                print(colored(chunk, 'grey'), end="\r")
+                print(chunk_colored(user_input, chunk), end="\r")
             stop_event = threading.Event()
             play_thread = threading.Thread(target=chunk_play, args=(chunk_raw, interval, repeat, stop_event))
             play_thread.start()
@@ -148,7 +163,7 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
                 continue
             with open(error_path, "a") as error_file:
                 error_file.write(chunk + "\n")
-            print(colored(chunk, 'grey'), end="\r")
+            print(chunk_colored(user_input, chunk), end="\r")
 
 def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, prompt, cache):
     sentences = data_read(sentence_path)
