@@ -122,6 +122,13 @@ def chunk_colored(user_input, chunk):
             result.append(colored(char, 'light_red'))
     return ''.join(result)
 
+def chunk_prompt(chunks, chunk):
+    if len(chunks) == 1:
+        return False
+    if chunks[0] != chunk or ' ' not in chunk_to_raw(chunk):
+        return False
+    return True
+
 def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
     if not isinstance(chunks, list):
         chunks = [chunks]
@@ -132,10 +139,10 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
             asyncio.run(chunk_generate_mp3(chunk_raw))
             continue
         if listen:
-            if prompt:
+            if prompt or chunk_prompt(chunks, chunk):
                 print(chunk_colored(user_input, chunk), end="\r")
             chunk_play(chunk_raw, interval, repeat)
-            if prompt:
+            if prompt or chunk_prompt(chunks, chunk):
                 # Clear the contents.
                 print("\033[K", end="")
                 sys.stdout.flush()
@@ -143,7 +150,7 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
 
         error_count = 0
         while True:
-            if prompt:
+            if prompt or chunk_prompt(chunks, chunk):
                 print(chunk_colored(user_input, chunk), end="\r")
             stop_event = threading.Event()
             play_thread = threading.Thread(target=chunk_play, args=(chunk_raw, interval, repeat, stop_event))
