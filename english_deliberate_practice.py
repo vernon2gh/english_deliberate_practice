@@ -165,11 +165,11 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
                 break
 
             error_count += 1
-            if error_count % 3 != 0:
-                continue
-            with open(error_path, "a") as error_file:
-                error_file.write(chunk + "\n")
-            print(chunk_colored(user_input, chunk), end="\r")
+            if error_count % 3 == 0:
+                with open(error_path, "a") as error_file:
+                    error_file.write(chunk + "\n")
+            if error_count % 3 == 0 or user_input == '':
+                print(chunk_colored(user_input, chunk), end="\r")
 
 def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, prompt, cache):
     sentences = data_read(sentence_path)
