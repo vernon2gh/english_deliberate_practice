@@ -8,7 +8,6 @@ import edge_tts
 import mpv
 import threading
 import spacy
-from termcolor import colored
 
 def data_read(file_path):
     with open(file_path, 'r') as file:
@@ -110,16 +109,16 @@ def chunks_prototype(chunks):
 
 def chunk_colored(user_input, chunk):
     if user_input == chunk_to_raw(chunk):
-        return colored(chunk, 'grey')
+        return f"\033[90m{chunk}\033[0m"            ## gray color
 
     result = []
     for i, char in enumerate(chunk):
         if re.match(r'[\u4e00-\u9fff]', char) or re.match(r'[^\w\s]', char):
-            result.append(colored(char, 'grey'))
+            result.append(f"\033[90m{char}\033[0m") ## gray color
         elif i < len(user_input) and char.lower() == user_input[i].lower():
-            result.append(colored(char, 'grey'))
+            result.append(f"\033[90m{char}\033[0m") ## gray color
         else:
-            result.append(colored(char, 'light_red'))
+            result.append(f"\033[91m{char}\033[0m") ## red color
     return ''.join(result)
 
 def chunk_prompt(chunks, chunk):
