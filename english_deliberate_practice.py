@@ -158,6 +158,8 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
             user_input = chunk_to_raw(input())
             stop_event.set()
             play_thread.join()
+            if user_input == chunk_raw:
+                chunk_play(chunk_raw, 0, 1)
             # Go back to the beginning of the previous line
             # and clear the contents.
             print("\033[F\033[K", end="")
