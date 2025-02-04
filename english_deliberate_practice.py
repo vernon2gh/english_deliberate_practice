@@ -8,6 +8,7 @@ import edge_tts
 import mpv
 import threading
 import spacy
+import inquirer
 
 def data_read(file_path):
     with open(file_path, 'r') as file:
@@ -171,8 +172,26 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
             if error_count % 3 == 0 or user_input == '':
                 print(chunk_colored(user_input, chunk), end="\r")
 
-def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, prompt, cache):
+def select_starting_point(items):
+    questions = [
+        inquirer.List('start',
+                      message="Select the starting point",
+                      choices=items,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    # Clear the previous interactive content and
+    # move to the beginning of the first line
+    print("\033c", end="")
+    return answers['start']
+
+def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, prompt, menu, cache):
     sentences = data_read(sentence_path)
+
+    if menu:
+        start_sentence = select_starting_point(sentences)
+        start_index = sentences.index(start_sentence)
+        sentences = sentences[start_index:]
 
     for sentence in sentences:
         chunks = sentence
@@ -208,8 +227,13 @@ def words_ebbinghaus(chunks):
 
     return ebbinghaus_chunks
 
-def word_main(word_path, filter_path, error_path, split, listen, interval, repeat, prompt, cache):
+def word_main(word_path, filter_path, error_path, split, listen, interval, repeat, prompt, menu, cache):
     words = data_read(word_path)
+
+    if menu:
+        start_word = select_starting_point(words)
+        start_index = words.index(start_word)
+        words = words[start_index:]
 
     chunks = word_filter(filter_path, words)
     if split:
@@ -220,11 +244,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='English deliberate practice')
     parser.add_argument('--split', action='store_true', help="split sentence to chunks or generate word based on the Ebbinghaus rule")
     parser.add_argument('--word',  action='store_true', help="practice the words only")
-    parser.add_argument('--prompt',  action='store_true', help="prompt sentence/chunk/word")
+    parser.add_argument('--prompt', action='store_true', help="prompt sentence/chunk/word")
     parser.add_argument('--cache', action='store_true', help="pre-generate audio cache")
     parser.add_argument('--interval', type=int, default=1, help="interval in seconds for playback audio, default 1")
     parser.add_argument('--repeat', type=int, default=1, help="number of times to repeat for playback audio, default 1")
-    parser.add_argument('--listen',  action='store_true', help="listen mode")
+    parser.add_argument('--listen', action='store_true', help="listen mode")
+    parser.add_argument('--menu',   action='store_true', help="interactive selection of starting sentence/word")
     parser.add_argument('--ffile', type=str, default='./filter.txt', help="path to filter file")
     parser.add_argument('--efile', type=str, default='./errornote.txt', help="path to error note file")
     parser.add_argument('--sfile', type=str, default='./sentences.txt', help="path to sentences file")
@@ -233,7 +258,7 @@ if __name__ == "__main__":
 
     if args.word:
         word_main(args.wfile, args.ffile, args.efile, args.split, args.listen,
-                  args.interval, args.repeat, args.prompt, args.cache)
+                  args.interval, args.repeat, args.prompt, args.menu, args.cache)
     else:
         sentence_main(args.sfile, args.ffile, args.efile, args.split, args.listen,
-                      args.interval, args.repeat, args.prompt, args.cache)
+                      args.interval, args.repeat, args.prompt, args.menu, args.cache)

@@ -11,7 +11,7 @@ practice words using the Ebbinghaus forgetting curve, and listen mode.
                        using the Ebbinghaus forgetting curve.
 - error note         : collect sentences/blocks/words that users practice incorrectly.
 - listen mode        : repeat a specified number of times at specified intervals
-                       for intensive listening training
+                       for intensive listening training.
 - audio cache        : pre-generate audio cache to improve performance.
 
 # Dependencies
@@ -19,7 +19,7 @@ practice words using the Ebbinghaus forgetting curve, and listen mode.
 Before running the script, make sure to install the required dependencies:
 
 ```bash
-(.venv) pip install edge_tts mpv termcolor
+(.venv) pip install edge_tts mpv inquirer
 ```
 
 # Examples
@@ -60,6 +60,7 @@ The script supports various command-line arguments to control different behavior
 - `--interval`  : interval in seconds for listen mode, default 1
 - `--repeat`    : number of times to repeat for listen mode, default 1
 - `--listen`    : listen mode
+- `--menu`      : interactive selection of starting sentence/word
 - `--ffile`     : path to the filter file (default: `./filter.txt`)
 - `--efile`     : path to error note file (default: `./errornote.txt`)
 - `--sfile`     : path to the sentence file (default: `./sentences.txt`)
