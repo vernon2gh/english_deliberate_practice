@@ -129,7 +129,7 @@ def chunk_prompt(chunks, chunk):
         return False
     return True
 
-def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
+def chunks_run(chunks, listen, interval, repeat, prompt, cache, fetch, error_path):
     if not isinstance(chunks, list):
         chunks = [chunks]
     for chunk in chunks:
@@ -137,6 +137,9 @@ def chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path):
         user_input = chunk_raw
         if cache:
             asyncio.run(chunk_generate_mp3(chunk_raw))
+            continue
+        if fetch:
+            print(chunk_raw)
             continue
         if listen:
             if prompt or chunk_prompt(chunks, chunk):
@@ -187,7 +190,8 @@ def select_starting_point(items):
     print("\033c", end="")
     return answers['start']
 
-def sentence_main(sentence_path, filter_path, error_path, split, listen, interval, repeat, prompt, menu, cache):
+def sentence_main(sentence_path, filter_path, error_path, split, listen, interval,
+                                            repeat, prompt, menu, cache, fetch):
     sentences = data_read(sentence_path)
 
     if menu:
@@ -202,7 +206,7 @@ def sentence_main(sentence_path, filter_path, error_path, split, listen, interva
             chunks = chunks_filter(filter_path, chunks)
             chunks = chunks_prototype(chunks)
             chunks.insert(0, sentence)
-        chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path)
+        chunks_run(chunks, listen, interval, repeat, prompt, cache, fetch, error_path)
 
 def word_filter(filter_path, words):
     if not os.path.exists(filter_path):
@@ -229,7 +233,8 @@ def words_ebbinghaus(chunks):
 
     return ebbinghaus_chunks
 
-def word_main(word_path, filter_path, error_path, split, listen, interval, repeat, prompt, menu, cache):
+def word_main(word_path, filter_path, error_path, split, listen, interval, repeat,
+                                                    prompt, menu, cache, fetch):
     words = data_read(word_path)
 
     if menu:
@@ -240,7 +245,7 @@ def word_main(word_path, filter_path, error_path, split, listen, interval, repea
     chunks = word_filter(filter_path, words)
     if split:
             chunks = words_ebbinghaus(chunks)
-    chunks_run(chunks, listen, interval, repeat, prompt, cache, error_path)
+    chunks_run(chunks, listen, interval, repeat, prompt, cache, fetch, error_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='English deliberate practice')
@@ -248,6 +253,7 @@ if __name__ == "__main__":
     parser.add_argument('--word',  action='store_true', help="practice the words only")
     parser.add_argument('--prompt', action='store_true', help="prompt sentence/chunk/word")
     parser.add_argument('--cache', action='store_true', help="pre-generate audio cache")
+    parser.add_argument('--fetch', action='store_true', help="pre-generate sentence/chunk/word cache")
     parser.add_argument('--interval', type=int, default=1, help="interval in seconds for playback audio, default 1")
     parser.add_argument('--repeat', type=int, default=1, help="number of times to repeat for playback audio, default 1")
     parser.add_argument('--listen', action='store_true', help="listen mode")
@@ -260,7 +266,9 @@ if __name__ == "__main__":
 
     if args.word:
         word_main(args.wfile, args.ffile, args.efile, args.split, args.listen,
-                  args.interval, args.repeat, args.prompt, args.menu, args.cache)
+                  args.interval, args.repeat, args.prompt, args.menu, args.cache,
+                  args.fetch)
     else:
         sentence_main(args.sfile, args.ffile, args.efile, args.split, args.listen,
-                      args.interval, args.repeat, args.prompt, args.menu, args.cache)
+                      args.interval, args.repeat, args.prompt, args.menu, args.cache,
+                      args.fetch)
