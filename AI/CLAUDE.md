@@ -4,7 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a language learning text processing project that generates vocabulary and phrase breakdown exercises from input sentences. The system takes English sentences and produces structured output showing word-by-word breakdowns, phrase combinations, and progressive sentence building.
+This is a language learning text processing project that generates vocabulary
+and phrase breakdown exercises from input sentences. The system takes English
+sentences and produces structured output showing word-by-word breakdowns,
+phrase combinations, and progressive sentence building.
 
 ## Core Processing Logic
 
@@ -49,3 +52,8 @@ cold
 a bit cold
 The weather was a bit cold
 ```
+
+## User Command
+
+When the user says "go", immediately process the sentences in `sentences.txt` and output the structured breakdown content to the output.txt.
+The output should follow the same processing pattern described above.
